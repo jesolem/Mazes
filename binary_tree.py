@@ -34,10 +34,12 @@ def draw_png(toss, wid=40, filename='maze.png'):
 
 if __name__ == "__main__":
 
+    # create a grid of coin tosses 0/1
     toss = np.random.randint(0, 2, (8,8)) # 0 north, 1 east
     toss[:,-1] = 1
     toss[-1,:-1] = 0
-    print(toss)
 
+    # visualize
+    print(toss)
     draw_ascii(toss)
     draw_png(toss)
