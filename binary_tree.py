@@ -8,10 +8,8 @@ def draw_ascii(toss):
 
     print(x+len(toss[0])*(h+x))
     for row in toss:
-        # east
-        print(v + "".join([s+v if i == 1 else " "+s for i in row]))
-        # north
-        print("".join([x+s if i == 1 else x+h for i in row]) + x)
+        print(v + "".join([s+v if i == 0 else " "+s for i in row])) # east
+        print("".join([x+s if i == 0 else x+h for i in row]) + x) # north
 
 
 def draw_png(toss, wid=40, filename='maze.png'):
@@ -24,20 +22,21 @@ def draw_png(toss, wid=40, filename='maze.png'):
 
     for row in range(rows):
         for col in range(cols):
-            if toss[row,col] == 1: # east
+            if toss[row,col] == 0: # east
                 draw.line( (wid*(col+2), wid*(row+1), wid*(col+2), wid*(row+2)), fill=(0, 0, 0))
             else: # north
                 draw.line( (wid*(col+1), wid*(row+2), wid*(col+2), wid*(row+2)), fill=(0, 0, 0))
 
     im.save(filename)
+    return im
 
 
 if __name__ == "__main__":
 
     # create a grid of coin tosses 0/1
-    toss = np.random.randint(0, 2, (8,8)) # 0 north, 1 east
-    toss[:,-1] = 1
-    toss[-1,:-1] = 0
+    toss = np.random.randint(0, 2, (8,8)) 
+    toss[:,-1] = 0
+    toss[-1,:-1] = 1
 
     # visualize
     print(toss)
