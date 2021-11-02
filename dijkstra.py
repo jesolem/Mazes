@@ -19,6 +19,8 @@ def backtrack(grid, distance, point):
 
 
 def compute_distances(grid, start=(0,0)):
+    """ Compute all distances from start using Dijkstras. """
+
     visited = np.zeros(grid.shape)
     distance = np.zeros(grid.shape)
 
@@ -57,7 +59,7 @@ def get_nbrs(grid, point):
     return nbrs
 
 
-def draw_maze_path(grid, track, filename="test.png"):
+def draw_maze_path(grid, track, filename="path.png"):
     """ Draw the path on top of the maze. """
     wid = 40
     im = bt.draw_png(grid, wid=wid)
@@ -68,15 +70,34 @@ def draw_maze_path(grid, track, filename="test.png"):
     im.save(filename)
 
 
+def draw_longest_path(grid, filename="longest.png"):
+    """ Find a long(est) path. """
+
+    startpoint = (np.random.randint(0, grid.shape[0]), np.random.randint(0, grid.shape[1]))
+    d = compute_distances(grid, start=startpoint)
+    maxpoint = np.unravel_index(d.argmax(), d.shape) # find largest value
+    d = compute_distances(grid, start=maxpoint) # distances from this point
+    endpoint = np.unravel_index(d.argmax(), d.shape) # find largest value
+
+    # draw path
+    t = backtrack(grid, d, endpoint)
+    draw_maze_path(grid, t, filename=filename)
+
+
+def visualize_distances(d, wid=40, filename="distance_map.png"):
+    """ Make an image of the distance map used for Dijkstra. """
+
+    m,n = d.shape
+    im = Image.fromarray(np.uint8(d * 255.0/d.max()) , 'L')
+    im2 = im.resize((wid*m, wid*n), Image.NEAREST) #Image.ANTIALIAS)
+    im2.save(filename)
+
+
 if __name__ == "__main__":
 
-    sz = 16
-    # create a grid of coin tosses 0/1
-    toss = np.random.randint(0, 2, (sz, sz)) 
-    toss[:,-1] = 0
-    toss[-1,:-1] = 1
+    toss = bt.create_binary_tree_maze(16)
+
+    draw_longest_path(toss)
 
     d = compute_distances(toss)
-    t = backtrack(toss, d, (sz-1, sz-1))
-    bt.draw_ascii(toss)
-    draw_maze_path(toss, t)
+    visualize_distances(d, wid=40)
