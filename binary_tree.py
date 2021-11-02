@@ -2,6 +2,15 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 
+def create_binary_tree_maze(sz=16):
+    """ Create a grid of coin tosses 0/1 as a binary tree maze. """
+
+    toss = np.random.randint(0, 2, (sz, sz))
+    toss[:,-1] = 0
+    toss[-1,:-1] = 1
+    return toss
+
+
 def draw_ascii(toss):
     """ Draw the maze in the console. """
     h, v, x, s = "---", "|", "+", "   "
@@ -34,9 +43,7 @@ def draw_png(toss, wid=40, filename='maze.png'):
 if __name__ == "__main__":
 
     # create a grid of coin tosses 0/1
-    toss = np.random.randint(0, 2, (8,8)) 
-    toss[:,-1] = 0
-    toss[-1,:-1] = 1
+    toss = create_binary_tree_maze(16)
 
     # visualize
     print(toss)
